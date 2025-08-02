@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.Default.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Compétitions d'agilité</h1>
+    <div id="map"></div>
+    <p>à jour au <span id="last_update"></span></p>
+
+    <p>Les données proviennent de <a href="https://www.agility-competitions.com/">Agility Competitions</a>.</p>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.1.0/dist/leaflet.markercluster.js"></script>
+    <script>
+       
+       $(document).ready(function() {
+           var map = L.map('map').setView([45.5017, -73.5673], 12); // Set initial view to Montreal
+           var markers = L.markerClusterGroup(); // Initialize marker cluster group
+           
+           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+               maxZoom: 19,
+               attribution: '© OpenStreetMap'
+            }).addTo(map);
+            
+            $.getJSON('events.json', function(data) {
+                data.events.forEach(function(event) {
+                    //L.marker([event.latitude, event.longitude]).addTo(map)
+                    //.bindPopup(event.place + '<br>' + event.date + '<br>' + event.judges + '<br>' + event.runs + '<br>' + event.info);
+                    console.log(event); // Log the event data to the console
+                    var marker = L.marker([event.latitude, event.longitude]);
+                    marker.bindPopup(event.place + '<br>' + event.city + '<br><b>Dates: </b>' + event.date + '<br><b>Juges: </b>' + event.judges + '<br><b>Epreuves: </b>' + event.runs + '<br><b>Infos: </b>' + event.info);
+                    markers.addLayer(marker); // Add marker to the cluster group
+                });
+                map.addLayer(markers); // Add the cluster group to the map
+                $('#last_update').text(data.last_update); // Update the last update text
+            });
+        });
+    </script>
+</body>
+</html>
