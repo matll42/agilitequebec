@@ -1,0 +1,13 @@
+name: Scrap events
+
+on:
+  schedule:
+    - cron: '0 4 * * *' # Runs at 4:00 AM UTC daily
+
+jobs:
+  example-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print message
+        run: echo "This workflow runs on a schedule!"
+
