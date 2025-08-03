@@ -42,9 +42,9 @@ class AgiliteSpider(scrapy.Spider):
             place = event.xpath('./td[1]/font[1]/text()').getall()
             city = re.sub('^\s+', '', place[len(place)-1])
             #if (not(redisAgilite.exists(city))):
-                self.log(f"Geocoding {city}...")
-                geolocator = redisAgilite(user_agent="agilitequebec")
-                location = geolocator.geocode(city)
+            self.log(f"Geocoding {city}...")
+            geolocator = Nominatim(user_agent="agilitequebec")
+            location = geolocator.geocode(city)
             #    redisAgilite.set(city, json.dumps({ "latitude": location.latitude, "longitude": location.longitude }))
             #else:
             #    self.log(f"Using cached location for {city}...")
