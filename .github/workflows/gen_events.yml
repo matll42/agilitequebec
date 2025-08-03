@@ -9,6 +9,26 @@ jobs:
   example-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Print message
-        run: echo "This workflow runs on a schedule!"
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Run Python Script
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          python3 scripts/gen_events.py
+      - name: Push generated file to repository
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add events.json
+          git commit -m "Add generated events.json"
+          git push
+      - name: Clean up
+        run: |
+          deactivate
+          rm -rf venv
+          rm -f events.json
+        if: always() # Ensures cleanup runs even if previous steps fail
+
 
