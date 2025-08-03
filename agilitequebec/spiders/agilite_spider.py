@@ -35,16 +35,25 @@ class AgiliteSpider(scrapy.Spider):
         table = PrettyTable()
         table.field_names = ["Place", "City", "Lat", "Lng", "Date", "Judges", "Runs", "Info"]
         
-        cleanEvents = [];
+        cleanEvents = []
+
+        cacheGeocode = {}
 
 
         for event in events:
             place = event.xpath('./td[1]/font[1]/text()').getall()
             city = re.sub('^\s+', '', place[len(place)-1])
+            if (cacheGeocode.get(city) is None):
+                self.log(f"Geocoding {city}...")
+                geolocator = Nominatim(user_agent="agilitequebec")
+                location = geolocator.geocode(city)
+                cacheGeocode[city] = location
+            else:
+                location = cacheGeocode[city]
+                self.log(f"Cached location for {city}: {location}")
             #if (not(redisAgilite.exists(city))):
-            self.log(f"Geocoding {city}...")
-            geolocator = Nominatim(user_agent="agilitequebec")
-            location = geolocator.geocode(city)
+            #geolocator = Nominatim(user_agent="agilitequebec")
+            #location = geolocator.geocode(city)
             #    redisAgilite.set(city, json.dumps({ "latitude": location.latitude, "longitude": location.longitude }))
             #else:
             #    self.log(f"Using cached location for {city}...")
