@@ -1,4 +1,4 @@
-name: Scrap events
+name: Generate events
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
-  example-job:
+  event_generation:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
