@@ -3,6 +3,7 @@ name: Scrap events
 on:
   schedule:
     - cron: '0 4 * * *' # Runs at 4:00 AM UTC daily
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   example-job:
