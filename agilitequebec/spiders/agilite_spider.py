@@ -102,7 +102,8 @@ class AgiliteSpider(scrapy.Spider):
         redisAgilite.set("last_update", cleanDate)
 
         with open("events.json", "w") as file:
-            json.dump({'last_update': cleanDate, 'events': cleanEvents}, file)
+            json.dump({'last_generation': datetime.now().isoformat(), 'last_update': cleanDate, 'events': cleanEvents}, file)
+            
 
         filename = f"agilitequebec.html"
         Path(filename).write_bytes(response.body)
