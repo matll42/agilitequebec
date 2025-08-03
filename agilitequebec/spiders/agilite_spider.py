@@ -28,7 +28,7 @@ class AgiliteSpider(scrapy.Spider):
         cleanDate = self.unspace(re.match('.*\D(\d+\s+\w+\s+\d+)', date, flags=0).group(1))
         self.log(cleanDate)
 
-        redisAgilite = redis.Redis(host='localhost', port=16379, db=0)
+        #redisAgilite = redis.Redis(host='localhost', port=16379, db=0)
 
         events = response.xpath("//body/table[2]/tr/td[not(@colspan=5)]/..")
 
@@ -41,16 +41,16 @@ class AgiliteSpider(scrapy.Spider):
         for event in events:
             place = event.xpath('./td[1]/font[1]/text()').getall()
             city = re.sub('^\s+', '', place[len(place)-1])
-            if (not(redisAgilite.exists(city))):
+            #if (not(redisAgilite.exists(city))):
                 self.log(f"Geocoding {city}...")
                 geolocator = redisAgilite(user_agent="agilitequebec")
                 location = geolocator.geocode(city)
-                redisAgilite.set(city, json.dumps({ "latitude": location.latitude, "longitude": location.longitude }))
-            else:
-                self.log(f"Using cached location for {city}...")
-                location_data = json.loads(redisAgilite.get(city))
-                location = type('Location', (object,), location_data)()
-                self.log(f"Cached location for {city}: {location}")
+            #    redisAgilite.set(city, json.dumps({ "latitude": location.latitude, "longitude": location.longitude }))
+            #else:
+            #    self.log(f"Using cached location for {city}...")
+            #    location_data = json.loads(redisAgilite.get(city))
+            #    location = type('Location', (object,), location_data)()
+            #    self.log(f"Cached location for {city}: {location}")
             
             if location:
                 latitude = location.latitude
@@ -99,8 +99,8 @@ class AgiliteSpider(scrapy.Spider):
         
         print(table)
 
-        redisAgilite.set("events", json.dumps(cleanEvents))
-        redisAgilite.set("last_update", cleanDate)
+        #redisAgilite.set("events", json.dumps(cleanEvents))
+        #redisAgilite.set("last_update", cleanDate)
 
         with open("events.json", "w") as file:
             json.dump({'last_generation': datetime.now().isoformat(), 'last_update': cleanDate, 'events': cleanEvents}, file)
