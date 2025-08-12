@@ -8,6 +8,9 @@ on:
 jobs:
   event_generation:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
