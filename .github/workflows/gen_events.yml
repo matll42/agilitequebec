@@ -20,7 +20,7 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
           cd agilitequebec
-          scrapy crawl events
+          scrapy crawl agilite
       - name: Push generated file to repository
         run: |
           git config --local user.email "action@github.com"
