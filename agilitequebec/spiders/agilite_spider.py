@@ -6,6 +6,7 @@ import json
 import re
 import redis
 import scrapy
+import time
 from prettytable import PrettyTable
 
 
@@ -39,13 +40,13 @@ class AgiliteSpider(scrapy.Spider):
 
         cacheGeocode = {}
 
+        geolocator = Nominatim(user_agent="agilitequebec")
 
         for event in events:
             place = event.xpath('./td[1]/font[1]/text()').getall()
             city = re.sub('^\s+', '', place[len(place)-1])
             if (cacheGeocode.get(city) is None):
                 self.log(f"Geocoding {city}...")
-                geolocator = Nominatim(user_agent="agilitequebec")
                 location = geolocator.geocode(city)
                 cacheGeocode[city] = location
             else:
@@ -105,6 +106,8 @@ class AgiliteSpider(scrapy.Spider):
                 "runs": runs,
                 "info": info
             })
+
+            time.sleep(0.25)
         
         print(table)
 
