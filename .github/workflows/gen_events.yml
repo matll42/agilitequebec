@@ -25,12 +25,11 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add events.json
+          git add agilitequebec/events.json
           git commit -m "Add generated events.json"
           git push
       - name: Clean up
         run: |
-          deactivate
           rm -rf venv
           rm -f events.json
         if: always() # Ensures cleanup runs even if previous steps fail
